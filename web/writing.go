@@ -19,6 +19,7 @@ const VersionEnv = "DDNS_GO_VERSION"
 
 // js中的dns配置
 type dnsConf4JS struct {
+	Name             string
 	DnsName          string
 	DnsID            string
 	DnsSecret        string
@@ -58,7 +59,7 @@ func Writing(writer http.ResponseWriter, request *http.Request) {
 	err = tmpl.Execute(writer, struct {
 		DnsConf           template.JS
 		NotAllowWanAccess bool
-		config.User
+		Username          string
 		config.Webhook
 		Version string
 		Ipv4    []config.NetInterface
@@ -66,7 +67,7 @@ func Writing(writer http.ResponseWriter, request *http.Request) {
 	}{
 		DnsConf:           template.JS(getDnsConfStr(conf.DnsConf)),
 		NotAllowWanAccess: conf.NotAllowWanAccess,
-		User:              conf.User,
+		Username:          conf.User.Username,
 		Webhook:           conf.Webhook,
 		Version:           os.Getenv(VersionEnv),
 		Ipv4:              ipv4,
@@ -84,6 +85,7 @@ func getDnsConfStr(dnsConf []config.DnsConfig) string {
 		// 已存在配置文件，隐藏真实的ID、Secret
 		idHide, secretHide := getHideIDSecret(&conf)
 		dnsConfArray = append(dnsConfArray, dnsConf4JS{
+			Name:             conf.Name,
 			DnsName:          conf.DNS.Name,
 			DnsID:            idHide,
 			DnsSecret:        secretHide,

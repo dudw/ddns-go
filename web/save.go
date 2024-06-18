@@ -9,7 +9,6 @@ import (
 	"github.com/jeessy2/ddns-go/v6/config"
 	"github.com/jeessy2/ddns-go/v6/dns"
 	"github.com/jeessy2/ddns-go/v6/util"
-	passwordvalidator "github.com/wagslane/go-password-validator"
 )
 
 var startTime = time.Now().Unix()
@@ -54,54 +53,46 @@ func checkAndSave(request *http.Request) string {
 	accept := request.Header.Get("Accept-Language")
 	conf.Lang = util.InitLogLang(accept)
 
-	// 验证安全性后才允许设置保存配置文件：
+	// 首次设置 && 必须在服务启动的 5 分钟内
 	if time.Now().Unix()-startTime > 5*60 {
-		// 首次设置 && 通过外网访问 必需在服务启动的 5 分钟内
-		if firstTime &&
-			(!util.IsPrivateNetwork(request.RemoteAddr) || !util.IsPrivateNetwork(request.Host)) {
-			return util.LogStr("若通过公网访问, 仅允许在ddns-go启动后 5 分钟内完成首次配置")
+		if firstTime {
+			return util.LogStr("请在ddns-go启动后 5 分钟内完成初始化配置")
 		}
-
-		// 非首次设置 && 从未设置过帐号密码 && 本次设置了帐号或密码 必须在5分钟内
-		if !firstTime &&
-			(conf.Username == "" && conf.Password == "") &&
+		// 之前未设置帐号密码 && 本次设置了帐号或密码 必须在5分钟内
+		if (conf.Username == "" && conf.Password == "") &&
 			(usernameNew != "" || passwordNew != "") {
-			return util.LogStr("若从未设置过帐号密码, 仅允许在ddns-go启动后 5 分钟内设置, 请重启ddns-go")
+			return util.LogStr("之前未设置帐号密码, 仅允许在ddns-go启动后 5 分钟内设置, 请重启ddns-go")
 		}
 	}
 
 	conf.NotAllowWanAccess = data.NotAllowWanAccess
-	conf.Username = usernameNew
-	conf.Password = passwordNew
 	conf.WebhookURL = strings.TrimSpace(data.WebhookURL)
 	conf.WebhookRequestBody = strings.TrimSpace(data.WebhookRequestBody)
 	conf.WebhookHeaders = strings.TrimSpace(data.WebhookHeaders)
 
-	// 如启用公网访问，帐号密码不能为空
-	if !conf.NotAllowWanAccess && (conf.Username == "" || conf.Password == "") {
-		return util.LogStr("启用外网访问, 必须输入登录用户名/密码")
+	// 如果新密码不为空则检查是否够强, 内/外网要求强度不同
+	conf.Username = usernameNew
+	if passwordNew != "" {
+		hashedPwd, err := conf.CheckPassword(passwordNew)
+		if err != nil {
+			return err.Error()
+		}
+		conf.Password = hashedPwd
 	}
 
-	// 如果密码不为空则检查是否够强, 内/外网要求强度不同
-	if passwordNew != "" {
-		var minEntropyBits float64 = 50
-		if conf.NotAllowWanAccess {
-			minEntropyBits = 25
-		}
-		err = passwordvalidator.Validate(passwordNew, minEntropyBits)
-		if err != nil {
-			return util.LogStr("密码不安全！尝试使用更长的密码")
-		}
+	// 帐号密码不能为空
+	if conf.Username == "" || conf.Password == "" {
+		return util.LogStr("必须输入登录用户名/密码")
 	}
 
 	dnsConfFromJS := data.DnsConf
-	dnsConfArray := []config.DnsConfig{}
+	var dnsConfArray []config.DnsConfig
 	empty := dnsConf4JS{}
 	for k, v := range dnsConfFromJS {
 		if v == empty {
 			continue
 		}
-		dnsConf := config.DnsConfig{TTL: v.TTL}
+		dnsConf := config.DnsConfig{Name: v.Name, TTL: v.TTL}
 		// 覆盖以前的配置
 		dnsConf.DNS.Name = v.DnsName
 		dnsConf.DNS.ID = strings.TrimSpace(v.DnsID)
@@ -134,12 +125,6 @@ func checkAndSave(request *http.Request) string {
 			}
 			if dnsConf.DNS.Secret == secretHide {
 				dnsConf.DNS.Secret = c.DNS.Secret
-			}
-
-			// 修改cmd需要验证：必须设置帐号密码
-			if (conf.Username == "" && conf.Password == "") &&
-				(c.Ipv4.Cmd != dnsConf.Ipv4.Cmd || c.Ipv6.Cmd != dnsConf.Ipv6.Cmd) {
-				return util.LogStr("修改 '通过命令获取' 必须设置帐号密码，请先设置帐号密码")
 			}
 		}
 

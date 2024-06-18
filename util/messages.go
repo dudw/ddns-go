@@ -12,7 +12,7 @@ var logPrinter = message.NewPrinter(language.English)
 
 func init() {
 
-	message.SetString(language.English, "可使用 .\\ddns-go.exe -s install 安装服务运行", "You can use 'sudo .\\ddns-go -s install' to install service")
+	message.SetString(language.English, "可使用 .\\ddns-go.exe -s install 安装服务运行", "You can use '.\\ddns-go.exe -s install' to install service")
 	message.SetString(language.English, "可使用 sudo ./ddns-go -s install 安装服务运行", "You can use 'sudo ./ddns-go -s install' to install service")
 	message.SetString(language.English, "监听 %s", "Listen on %s")
 	message.SetString(language.English, "配置文件已保存在: %s", "Config file has been saved to: %s")
@@ -37,7 +37,7 @@ func init() {
 	message.SetString(language.English, "通过接口获取IPv4失败! 接口地址: %s", "Get IPv4 from %s failed")
 	message.SetString(language.English, "通过接口获取IPv6失败! 接口地址: %s", "Get IPv6 from %s failed")
 	message.SetString(language.English, "将不会触发Webhook, 仅在第 3 次失败时触发一次Webhook, 当前失败次数：%d", "Webhook will not be triggered, only trigger once when the third failure, current failure times: %d")
-	message.SetString(language.English, "在DNS服务商中未找到域名: %s", "Domain %s not found in DNS provider")
+	message.SetString(language.English, "在DNS服务商中未找到根域名: %s", "Root domain not found in DNS provider: %s")
 
 	// webhook
 	message.SetString(language.English, "Webhook配置中的URL不正确", "Webhook url is incorrect")
@@ -53,11 +53,10 @@ func init() {
 	message.SetString(language.English, "Callback调用失败, 异常信息: %s", "Webhook called failed! Exception: %s")
 
 	// save
-	message.SetString(language.English, "若通过公网访问, 仅允许在ddns-go启动后 5 分钟内完成首次配置", "If accessed via the public network, only allow the first configuration to be completed within 5 minutes after ddns-go starts")
-	message.SetString(language.English, "若从未设置过帐号密码, 仅允许在ddns-go启动后 5 分钟内设置, 请重启ddns-go", "If you have never set an account password, you can only set it within 5 minutes after ddns-go starts, please restart ddns-go")
-	message.SetString(language.English, "启用外网访问, 必须输入登录用户名/密码", "Enable external network access, you must enter the login username/password")
-	message.SetString(language.English, "修改 '通过命令获取' 必须设置帐号密码，请先设置帐号密码", "Modify 'Get by command' must set username/password, please set username/password first")
-	message.SetString(language.English, "密码不安全！尝试使用更长的密码", "insecure password, try using a longer password")
+	message.SetString(language.English, "请在ddns-go启动后 5 分钟内完成初始化配置", "Please initialize configuration within 5 minutes after ddns-go starts")
+	message.SetString(language.English, "之前未设置帐号密码, 仅允许在ddns-go启动后 5 分钟内设置, 请重启ddns-go", "The username/password has not been set before, only allowed to set within 5 minutes after ddns-go starts, please restart ddns-go")
+	message.SetString(language.English, "必须输入登录用户名/密码", "Must enter login username/password")
+	message.SetString(language.English, "密码不安全！尝试使用更复杂的密码", "Password is not secure! Try using a more complex password")
 	message.SetString(language.English, "数据解析失败, 请刷新页面重试", "Data parsing failed, please refresh the page and try again")
 	message.SetString(language.English, "第 %s 个配置未填写域名", "The %s config does not fill in the domain")
 
@@ -87,6 +86,7 @@ func init() {
 	message.SetString(language.English, "本机DNS异常! 将默认使用 %s, 可参考文档通过 -dns 自定义 DNS 服务器", "Local DNS exception! Will use %s by default, you can use -dns to customize DNS server")
 	message.SetString(language.English, "等待网络连接: %s", "Waiting for network connection: %s")
 	message.SetString(language.English, "%s 后重试...", "Retry after %s")
+	message.SetString(language.English, "网络已连接", "The network is connected")
 
 	// main
 	message.SetString(language.English, "监听端口发生异常, 请检查端口是否被占用! %s", "Listen port failed, please check if the port is occupied! %s")
@@ -111,6 +111,12 @@ func init() {
 	message.SetString(language.English, "未改变", "no changed")
 	message.SetString(language.English, "失败", "failed")
 	message.SetString(language.English, "成功", "success")
+
+	// Login
+	message.SetString(language.English, "%q 登陆成功", "%q login successfully")
+	message.SetString(language.English, "用户名或密码错误", "Username or password is incorrect")
+	message.SetString(language.English, "登录失败次数过多，请等待 %d 分钟后再试", "Too many login failures, please try again after %d minutes")
+	message.SetString(language.English, "用户名 %s 的密码已重置成功! 请重启ddns-go", "The password of username %s has been reset successfully! Please restart ddns-go")
 
 }
 

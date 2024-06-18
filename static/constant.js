@@ -98,7 +98,7 @@ const DNS_PROVIDERS = {
     idLabel: "Key",
     secretLabel: "Secret",
     helpHtml: {
-      "en": "<a target='_blank' href='https://porkbun.com/account/api'>Create API KEY</a>",
+      "en": "<a target='_blank' href='https://developer.godaddy.com/keys'>Create API KEY</a>",
       "zh-cn": "<a target='_blank' href='https://developer.godaddy.com/keys'>创建 API KEY</a>",
     }
   },
@@ -173,6 +173,8 @@ const I18N_MAP = {
     'Save': 'Save',
     'Config:': 'Config:',
     'Add': 'Add',
+    'Rename': 'Rename',
+    'RenameHelp': 'Enter a new name:',
     'Delete': 'Delete',
     'DNS Provider': 'DNS Provider',
     'Create AccessKey': 'Create AccessKey',
@@ -204,6 +206,7 @@ const I18N_MAP = {
     'NotAllowWanAccessHelp': 'Default enabled, can prohibit access to this page from the public network',
     'Username': 'Username',
     'accountHelp': 'Please enter to protect your information security',
+    'passwordHelp': 'If you need to change the password, please enter it here',
     'Password': 'Password',
     'WebhookURLHelp': `
       <a
@@ -226,12 +229,15 @@ const I18N_MAP = {
     "Ipv4CmdHelp": "Get IPv4 through command, only use the first matching IPv4 address of standard output(stdout). Such as: ip -4 addr show eth1",
     "Ipv6CmdHelp": "Get IPv6 through command, only use the first matching IPv6 address of standard output(stdout). Such as: ip -6 addr show eth1",
     "NetInterfaceEmptyHelp": '<span style="color: red">No available network card found</span>',
+    "Login": 'Login',
   },
   'zh-cn': {
     'Logs': '日志',
     'Save': '保存',
     'Config:': '配置切换:',
     'Add': '添加',
+    'Rename': '重命名',
+    'RenameHelp': '输入新名称：',
     'Delete': '删除',
     'DNS Provider': 'DNS服务商',
     'Create AccessKey': '创建 AccessKey',
@@ -263,6 +269,7 @@ const I18N_MAP = {
     'NotAllowWanAccessHelp': '默认启用, 可禁止从公网访问本页面',
     'Username': '用户名',
     'accountHelp': '为保护你的信息安全，建议输入',
+    'passwordHelp': '如需修改密码，请在此处输入新密码',
     'Password': '密码',
     'WebhookURLHelp': `
       <a target="blank" href="https://github.com/jeessy2/ddns-go#webhook">点击参考官方 Webhook 说明</a>
@@ -287,5 +294,6 @@ const I18N_MAP = {
       <a target="blank" href="https://github.com/jeessy2/ddns-go/wiki/通过命令获取IP参考">点击参考更多</a>
     `,
     "NetInterfaceEmptyHelp": '<span style="color: red">没有找到可用的网卡</span>',
+    "Login": '登录',
   }
 };
